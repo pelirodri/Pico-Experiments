@@ -46,6 +46,7 @@ int main() {
 void set_up_button() {
 	gpio_init(push_button_gpio_pin);
 	gpio_set_dir(push_button_gpio_pin, GPIO_IN);
+	gpio_pull_up(push_button_gpio_pin);
 	gpio_set_irq_enabled_with_callback(push_button_gpio_pin, GPIO_IRQ_EDGE_FALL, true, &button_pressed_handler);
 }
 
