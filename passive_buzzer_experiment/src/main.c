@@ -3,12 +3,16 @@
 
 #include <stdlib.h>
 #include <hardware/gpio.h>
+#include <hardware/timer.h>
 
 static const uint passive_buzzer_gpio_pin = 15;
 static const uint push_button_gpio_pin = 16;
 
 static const passive_buzzer_t *passive_buzzer = NULL;
 static volatile bool should_play_melody = false;
+
+static uint32_t interrupt_debounce_delay_ms = 20;
+static uint32_t last_interrupt_time_ms = 0;
 
 static void set_up_button();
 static void button_pressed_handler(uint, uint32_t);
@@ -46,12 +50,18 @@ void set_up_button() {
 }
 
 void button_pressed_handler(uint gpio, uint32_t events) {
-	if (!passive_buzzer_is_playing(passive_buzzer)) {
-		should_play_melody = true;
-	} else {
-		passive_buzzer_stop((passive_buzzer_t *)passive_buzzer);
-		should_play_melody = false;
+	float current_time_ms = (float)time_us_32() / 1000;
+
+	if (current_time_ms - last_interrupt_time_ms >= interrupt_debounce_delay_ms) {
+		if (!passive_buzzer_is_playing(passive_buzzer)) {
+			should_play_melody = true;
+		} else {
+			passive_buzzer_stop((passive_buzzer_t *)passive_buzzer);
+			should_play_melody = false;
+		}
 	}
+
+	last_interrupt_time_ms = current_time_ms;
 }
 
 int check_for_should_play_melody() {
