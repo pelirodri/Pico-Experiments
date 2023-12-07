@@ -15,6 +15,6 @@ add_executable(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME} PRIVATE src/passive_buzzer_experiment.c src/main.c)
 target_include_directories(${PROJECT_NAME} PRIVATE src)
-target_link_libraries(${PROJECT_NAME} PRIVATE hardware_gpio hardware_timer passivebuzzer)
+target_link_libraries(${PROJECT_NAME} PRIVATE hardware_gpio passivebuzzer)
 
 pico_add_extra_outputs(${PROJECT_NAME})
