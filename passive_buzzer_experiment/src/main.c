@@ -84,12 +84,7 @@ bool check_button_pressed_state() {
 int check_for_should_play_melody() {
 	if (should_play_melody) {
 		should_play_melody = false;
-
-		int return_code = play_melody(passive_buzzer, happy_birthday, 250, 100);
-
-		if (return_code) {
-			return return_code;
-		}
+		return play_melody(passive_buzzer, happy_birthday, 250, 100);
 	}
 
 	return 0;
