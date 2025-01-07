@@ -4,13 +4,14 @@
 #include <hardware/pwm.h>
 #include <hardware/clocks.h>
 
+// https://www.i-programmer.info/programming/hardware/14849-the-pico-in-c-basic-pwm.html
 void pwm_configure_gpio_pin(uint gpio_pin, uint32_t freq, float volume) {
 	uint slice_num = pwm_gpio_to_slice_num(gpio_pin);
 
 	const uint32_t sys_clock_freq = clock_get_hz(clk_sys);
 
-	float divider = fmax(ceil((double)sys_clock_freq / (4096 * freq)) / 16, 1);
-	uint16_t wrap = ((sys_clock_freq / divider) / (freq * 2)) - 1;
+	float divider = fmax(ceil((double)sys_clock_freq / (4096 * freq)), 1);
+	uint16_t wrap = ((sys_clock_freq / divider) / (freq * 2)) - 1; // Double the frequency because of phase correction.
 	uint16_t level = (wrap * (50 * volume)) / 10000;
 
 	pwm_config config = pwm_get_default_config();

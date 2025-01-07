@@ -67,10 +67,12 @@ bool button_check_callback(struct repeating_timer *timer) {
 	return true;
 }
 
+// https://hackaday.com/2015/12/10/embed-with-elliot-debounce-your-noisy-buttons-part-ii
 inline void update_button_pressed_history(bool button_pressed_state) {
 	button_pressed_history = (button_pressed_history << 1) | button_pressed_state;
 }
 
+// https://hackaday.com/2015/12/10/embed-with-elliot-debounce-your-noisy-buttons-part-ii
 bool check_button_pressed_state() {
 	if ((button_pressed_history & 0xC7) != 0x7) {
 		return false;
