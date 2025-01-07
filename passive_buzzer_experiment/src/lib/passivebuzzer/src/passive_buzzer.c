@@ -72,7 +72,7 @@ void passive_buzzer_melody_clean_up(passive_buzzer_melody_t *melody) {
 }
 
 void passive_buzzer_play_note(const passive_buzzer_t *passive_buzzer, const passive_buzzer_note_t *note, uint tempo) {
-	pwm_configure_gpio_pin(passive_buzzer->gpio_pin, note->frequency * 2, note->volume_percentage);
+	pwm_configure_gpio_pin(passive_buzzer->gpio_pin, note->frequency, note->volume_percentage);
 
 	pwm_start(passive_buzzer->gpio_pin);
 	sleep_ms(((note->beats_count * 60) / tempo) * 1000);
