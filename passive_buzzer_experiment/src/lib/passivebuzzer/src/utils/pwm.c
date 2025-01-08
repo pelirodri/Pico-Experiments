@@ -12,7 +12,7 @@ void pwm_configure_gpio_pin(uint gpio_pin, uint32_t freq, float volume) {
 
 	float divider = fmax(ceil((double)sys_clock_freq / (4096 * freq)), 1);
 	uint16_t wrap = ((sys_clock_freq / divider) / (freq * 2)) - 1; // Double the frequency because of phase correction.
-	uint16_t level = (wrap * (50 * volume)) / 10000;
+	uint16_t level = ((0.5 * volume) / 100) * wrap; // Max volume is half the period (50% duty cycle).
 
 	pwm_config config = pwm_get_default_config();
 
