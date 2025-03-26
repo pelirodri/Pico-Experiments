@@ -1,3 +1,4 @@
+#include "return_code_t.h"
 #include "passive_buzzer_experiment.h"
 #include "passivebuzzer/passive_buzzer.h"
 
@@ -16,13 +17,13 @@ static void set_up_button();
 static bool button_check_callback(struct repeating_timer *);
 static void update_button_pressed_history(bool);
 static bool check_button_pressed_state();
-static int check_for_should_play_melody();
+static return_code_t check_for_should_play_melody();
 
 int main() {
 	passive_buzzer = passive_buzzer_create(passive_buzzer_gpio_pin);
 
 	if (!passive_buzzer) {
-		return 1;
+		return alloc_failure;
 	}
 
 	set_up_button();
@@ -30,7 +31,7 @@ int main() {
 	struct repeating_timer timer;
 	add_repeating_timer_ms(5, button_check_callback, NULL, &timer);
 	
-	int return_code = 0;
+	return_code_t return_code = success;
 
 	while (true) {
 		return_code = check_for_should_play_melody();
@@ -42,7 +43,7 @@ int main() {
 
 	free((passive_buzzer_t *)passive_buzzer);
 
-	return return_code;
+	return (int)return_code;
 }
 
 void set_up_button() {
@@ -83,11 +84,11 @@ bool check_button_pressed_state() {
 	return true;
 }
 
-int check_for_should_play_melody() {
+return_code_t check_for_should_play_melody() {
 	if (should_play_melody) {
 		should_play_melody = false;
 		return play_melody(passive_buzzer, happy_birthday, 250, 100);
 	}
 
-	return 0;
+	return success;
 }

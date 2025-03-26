@@ -1,17 +1,18 @@
+#include "return_code_t.h"
 #include "passive_buzzer_experiment.h"
 
-static int play_happy_birthday_melody(const passive_buzzer_t *, uint, uint);
+static return_code_t play_happy_birthday_melody(const passive_buzzer_t *, uint, uint);
 
-int play_melody(const passive_buzzer_t *passive_buzzer, melody_id_t melody_id, uint tempo, uint volume) {
+return_code_t play_melody(const passive_buzzer_t *passive_buzzer, melody_id_t melody_id, uint tempo, uint volume) {
 	switch (melody_id) {
 		case happy_birthday:
 			return play_happy_birthday_melody(passive_buzzer, tempo, volume);
 		default:
-			return 2;
+			return melody_not_found_failure;
 	}
 }
 
-int play_notes(
+return_code_t play_notes(
 	const passive_buzzer_t *passive_buzzer,
 	const passive_buzzer_note_t *notes[],
 	size_t notes_count,
@@ -20,16 +21,16 @@ int play_notes(
 	const passive_buzzer_melody_t *melody = passive_buzzer_melody_create(notes, notes_count, tempo);
 
 	if (!melody) {
-		return 3;
+		return alloc_failure;
 	}
 
 	passive_buzzer_play_melody((passive_buzzer_t *)passive_buzzer, melody);
 	passive_buzzer_melody_clean_up((passive_buzzer_melody_t *)melody);
 
-	return 0;
+	return success;
 }
 
-int play_happy_birthday_melody(const passive_buzzer_t *passive_buzzer, uint tempo, uint volume) {
+return_code_t play_happy_birthday_melody(const passive_buzzer_t *passive_buzzer, uint tempo, uint volume) {
 	const passive_buzzer_note_t *happy_birthday_notes[] = {
 		passive_buzzer_note_create(C3, 1.25, volume),
 		passive_buzzer_note_create(C3, 0.75, volume),
